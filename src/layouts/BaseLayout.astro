@@ -1,0 +1,24 @@
+---
+import "../styles/global.css";
+
+const {
+    title = "Nagarjuna Chamidisetty",
+    description = "Engineer and lifelong learner.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={description} />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <title>{title}</title>
+    </head>
+    <body class="min-h-screen bg-white text-gray-900 antialiased">
+        <main class="mx-auto max-w-2xl px-6 py-16">
+            <slot />
+        </main>
+    </body>
+</html>
