@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import SunIcon from "../components/icons/SunIcon.astro";
+import MoonIcon from "../components/icons/MoonIcon.astro";
+import MonitorIcon from "../components/icons/MonitorIcon.astro";
 
 const {
     title = "Nagarjuna Chamidisetty",
@@ -15,10 +18,86 @@ const {
         <meta name="description" content={description} />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <title>{title}</title>
+        <script is:inline>
+            const theme = localStorage.getItem('theme') ?? 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', isDark);
+        </script>
     </head>
-    <body class="min-h-screen bg-white text-gray-900 antialiased">
+    <body class="min-h-screen bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+        <header class="mx-auto max-w-2xl px-6 pt-10">
+            <nav class="flex items-center gap-6 text-sm font-medium">
+                <a href="/" class="hover:text-blue-600">Home</a>
+                <a href="/about" class="hover:text-blue-600">About</a>
+                <a href="/blog" class="hover:text-blue-600">Blog</a>
+                <div id="theme-toggle" class="ml-auto flex items-center gap-1">
+                    <button
+                        data-theme="light"
+                        aria-label="Light mode"
+                        class="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    >
+                        <SunIcon />
+                    </button>
+                    <button
+                        data-theme="dark"
+                        aria-label="Dark mode"
+                        class="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    >
+                        <MoonIcon />
+                    </button>
+                    <button
+                        data-theme="system"
+                        aria-label="System theme"
+                        class="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    >
+                        <MonitorIcon />
+                    </button>
+                </div>
+            </nav>
+        </header>
+
         <main class="mx-auto max-w-2xl px-6 py-16">
             <slot />
         </main>
+
+        <footer class="mx-auto max-w-2xl px-6 py-10 text-sm text-gray-500 dark:text-gray-400">
+            <div class="flex gap-6">
+                <a href="https://github.com/nchamid" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600">GitHub</a>
+                <a href="https://linkedin.com/in/nchamid" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600">LinkedIn</a>
+                <a href="https://nagarjunach.substack.com" target="_blank" rel="noopener noreferrer" class="cursor-pointer hover:text-blue-600">Substack</a>
+            </div>
+            <p class="mt-4">© {new Date().getFullYear()} Nagarjuna Chamidisetty</p>
+        </footer>
+
+        <script is:inline>
+            const applyTheme = (value) => {
+                const isDark =
+                    value === 'dark' ||
+                    (value === 'system' &&
+                        window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
+            };
+
+            const highlight = (value) => {
+                document.querySelectorAll('#theme-toggle button').forEach((btn) => {
+                    const active = btn.dataset.theme === value;
+                    btn.classList.toggle('text-blue-600', active);
+                    btn.classList.toggle('bg-gray-100', active);
+                    btn.classList.toggle('dark:bg-gray-800', active);
+                });
+            };
+
+            const current = localStorage.getItem('theme') ?? 'system';
+            highlight(current);
+
+            document.querySelectorAll('#theme-toggle button').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const value = btn.dataset.theme;
+                    localStorage.setItem('theme', value);
+                    applyTheme(value);
+                    highlight(value);
+                });
+            });
+        </script>
     </body>
 </html>
