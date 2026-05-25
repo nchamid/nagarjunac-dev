@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout title="Blog — Nagarjuna Chamidisetty" description="Technical notes, snippets, and lessons from my journey.">
+    <h1 class="text-3xl font-bold">Blog</h1>
+
+    <ul class="mt-8 space-y-6">
+        {posts.map((post) => (
+            <li>
+                <a href={`/blog/${post.id}`} class="group">
+                    <h2 class="text-xl font-semibold group-hover:text-blue-600">
+                        {post.data.title}
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        {post.data.pubDate.toLocaleDateString("en-US", {
+                            year: "numeric", month: "long", day: "numeric",
+                        })}
+                    </p>
+                    <p class="mt-1 text-gray-700 dark:text-gray-300">
+                        {post.data.description}
+                    </p>
+                </a>
+            </li>
+        ))}
+    </ul>
+</BaseLayout>
